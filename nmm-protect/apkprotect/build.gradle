@@ -1,52 +1,11 @@
-
-
-
-
-buildscript {
-    repositories {
-        mavenCentral()
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
-    }
-    dependencies {
-        classpath "com.google.protobuf:protobuf-gradle-plugin:0.8.13"
-    }
-}
-
 plugins {
     id 'java'
-}
-apply plugin: "com.google.protobuf"
-
-protobuf {
-    protoc {
-        artifact = "com.google.protobuf:protoc:3.19.2"
-    }
-}
-sourceSets {
-    main.java {
-        srcDir "build/generated/source/proto/main/java"
-    }
-}
-
-task sourceJar(type: Jar) {
-    from sourceSets.main.java.srcDirs
-    archiveClassifier.set("sources")
 }
 
 repositories {
     mavenCentral()
     google()
     maven { url "https://plugins.gradle.org/m2/" }
-}
-
-compileJava.options.encoding = 'UTF-8'
-compileTestJava.options.encoding = 'UTF-8'
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_9
-    targetCompatibility = JavaVersion.VERSION_1_9
 }
 
 dependencies {
@@ -61,10 +20,38 @@ dependencies {
 
     implementation 'com.android.tools:r8:4.0.63'
 
-
+    // Protobuf dependencies (updated version)
     implementation "com.google.protobuf:protobuf-java:3.22.2"
+    implementation "com.google.protobuf:protobuf-javalite:3.22.2"  // Optional, for smaller runtime footprint
 
     implementation "com.android:zipflinger:7.3.1"
-//    implementation project(':zipflinger')
+//    implementation project(':zipflinger')  // Choose between local project or external dependency
+
     testImplementation 'junit:junit:4.13.2'
+}
+
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+// Protobuf configuration (consider upgrading plugin)
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.19.2"  // Consider upgrading if necessary
+    }
+}
+
+sourceSets {
+    main.java {
+        srcDir "build/generated/source/proto/main/java"
+    }
+}
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.java.srcDirs
+    archiveClassifier.set("sources")
 }

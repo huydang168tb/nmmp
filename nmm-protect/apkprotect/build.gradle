@@ -1,12 +1,19 @@
 plugins {
     id 'java'
+    id "com.google.protobuf" version "0.9.4" // Update protobuf plugin version
 }
 
 repositories {
     mavenCentral()
-    google()
     maven { url "https://plugins.gradle.org/m2/" }
+    google() // Add Google Maven repository for Android dependencies
 }
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
 
 dependencies {
     implementation project(':arsc')
@@ -20,38 +27,24 @@ dependencies {
 
     implementation 'com.android.tools:r8:4.0.63'
 
-    // Protobuf dependencies (updated version)
+    // Update protobuf to latest compatible version
     implementation "com.google.protobuf:protobuf-java:3.22.2"
-    implementation "com.google.protobuf:protobuf-javalite:3.22.2"  // Optional, for smaller runtime footprint
 
     implementation "com.android:zipflinger:7.3.1"
-//    implementation project(':zipflinger')  // Choose between local project or external dependency
+//    implementation project(':zipflinger') // Use this if zipflinger is a local module
 
     testImplementation 'junit:junit:4.13.2'
 }
 
-compileJava.options.encoding = 'UTF-8'
-compileTestJava.options.encoding = 'UTF-8'
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
-
-// Protobuf configuration (consider upgrading plugin)
 protobuf {
     protoc {
-        artifact = "com.google.protobuf:protoc:3.19.2"  // Consider upgrading if necessary
-    }
-}
-
-sourceSets {
-    main.java {
-        srcDir "build/generated/source/proto/main/java"
+        artifact = "com.google.protobuf:protoc:3.22.2" // Match protobuf-java version
     }
 }
 
 task sourceJar(type: Jar) {
     from sourceSets.main.java.srcDirs
-    archiveClassifier.set("sources")
+    archiveClassifier = 'sources'
 }
+
+// Consider using a dedicated task for generating proto files based on your build process.
